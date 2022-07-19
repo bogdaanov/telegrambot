@@ -1,8 +1,5 @@
 import logging
 from aiogram import Bot, Dispatcher, executor, types
-from aiogram.types.message import ContentTypes
-from aiogram.types.message import ContentType
-
 
 import markup as nav
 
