@@ -2,6 +2,7 @@ import logging
 from aiogram import Bot, Dispatcher, executor, types
 from payments import pay_token, prices
 from aiogram.types import PreCheckoutQuery
+from aiogram.types.message import ContentTypes
 
 from db import Database
 import markup as nav
@@ -36,7 +37,7 @@ async def shop(call: types.CallbackQuery):
 
 @dp.callback_query_handler(text_startswith='ord')
 async def buy(call: types.CallbackQuery):
-    if call.data == 'day':
+    if call.data[:3] == 'day':
         await bot.send_invoice(call.from_user.id, title='Вода', description='Вкусная вода))', provider_token=pay_token,
                                currency='uah', need_phone_number=True, need_shipping_address=True,
                                prices=prices, start_parameter='example', payload='some_invoice')
@@ -48,6 +49,10 @@ async def shipping(shipping_query: types.ShippingQuery):
 @dp.pre_checkout_query_handler(lambda query: True)
 async def checkout(pre_checkout_query: PreCheckoutQuery):
     await bot.answer_pre_checkout_query(pre_checkout_query.id, ok=True)
+
+@dp.message_handler(content_types=ContentTypes.SUCCESSFUL_PAYMENT)
+async def got_payment(message: types.Message):
+    await bot.send_message(message.chat.id, 'Успешная оплата')
 
 #Техподдеержка
 @dp.callback_query_handler(text_startswith='but')
