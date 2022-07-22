@@ -34,15 +34,18 @@ async def shop(call: types.CallbackQuery):
     elif call.data == 'btn_support':
         await bot.send_message(call.from_user.id, 'Выберите как хотите связаться', reply_markup=nav.sup_m)
 
-@dp.callback_query_handler(text_startswith='qqq')
+@dp.callback_query_handler(text_startswith='ord')
 async def buy(call: types.CallbackQuery):
     if call.data == 'day':
         await bot.send_invoice(call.from_user.id, title='Вода', description='Вкусная вода))', provider_token=pay_token,
                                currency='uah', need_phone_number=True, need_shipping_address=True,
                                prices=prices, start_parameter='example', payload='some_invoice')
 
+@dp.shipping_query_handler(lambda query: True)
+async def shipping(shipping_query: types.ShippingQuery):
+    await bot.answer_shipping_query(shipping_query.id, ok=True)
 
-@dp.pre_checkout_query_handler(lambda q: True)
+@dp.pre_checkout_query_handler(lambda query: True)
 async def checkout(pre_checkout_query: PreCheckoutQuery):
     await bot.answer_pre_checkout_query(pre_checkout_query.id, ok=True)
 
