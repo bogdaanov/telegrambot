@@ -12,12 +12,12 @@ but_text = InlineKeyboardButton(text='Задать вопрос менеджер
 
 
 cday = InlineKeyboardMarkup(row_width=2)
-ord_m = InlineKeyboardButton(text='Понедельник', callback_data='day_monday')
-ord_t = InlineKeyboardButton(text='Вторник', callback_data='day_tuesday')
-ord_w = InlineKeyboardButton(text='Среда', callback_data='day_wednesday')
-ord_th = InlineKeyboardButton(text='Четверг', callback_data='day_thursday')
-ord_f = InlineKeyboardButton(text='Пятница', callback_data='day_friday')
-ord_s = InlineKeyboardButton(text='Суббота', callback_data='day_saturday')
+qqq_m = InlineKeyboardButton(text='Понедельник', callback_data='day_monday')
+qqq_t = InlineKeyboardButton(text='Вторник', callback_data='day_tuesday')
+qqq_w = InlineKeyboardButton(text='Среда', callback_data='day_wednesday')
+qqq_th = InlineKeyboardButton(text='Четверг', callback_data='day_thursday')
+qqq_f = InlineKeyboardButton(text='Пятница', callback_data='day_friday')
+qqq_s = InlineKeyboardButton(text='Суббота', callback_data='day_saturday')
 
 
 
@@ -30,9 +30,9 @@ sup_m.insert(but_text)
 sup_m.insert(but_call)
 
 
-cday.insert(ord_m)
-cday.insert(ord_t)
-cday.insert(ord_w)
-cday.insert(ord_th)
-cday.insert(ord_f)
-cday.insert(ord_s)
+cday.insert(qqq_m)
+cday.insert(qqq_t)
+cday.insert(qqq_w)
+cday.insert(qqq_th)
+cday.insert(qqq_f)
+cday.insert(qqq_s)

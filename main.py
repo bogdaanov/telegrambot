@@ -27,26 +27,27 @@ async def bot_message(message: types.Message):
     if message.chat.type == 'private':
         await bot.send_message(message.from_user.id, 'Я Вас не понимаю. Нажмите /start, чтобы начать')
 
-@dp.callback_query_handler(text_contains='btn')
+@dp.callback_query_handler(text_startswith='btn')
 async def shop(call: types.CallbackQuery):
     if call.data == 'btn_order':
         await bot.send_message(call.from_user.id, 'Выберите день доставки', reply_markup=nav.cday)
     elif call.data == 'btn_support':
         await bot.send_message(call.from_user.id, 'Выберите как хотите связаться', reply_markup=nav.sup_m)
 
-@dp.callback_query_handler(text_contains='ord')
+@dp.callback_query_handler(text_startswith='qqq')
 async def buy(call: types.CallbackQuery):
     if call.data == 'day':
-        await bot.send_invoice(call.from_user.id, title='Вода', description='ff', provider_token=pay_token,
+        await bot.send_invoice(call.from_user.id, title='Вода', description='Вкусная вода))', provider_token=pay_token,
                                currency='uah', need_phone_number=True, need_shipping_address=True,
                                prices=prices, start_parameter='example', payload='some_invoice')
+
 
 @dp.pre_checkout_query_handler(lambda q: True)
 async def checkout(pre_checkout_query: PreCheckoutQuery):
     await bot.answer_pre_checkout_query(pre_checkout_query.id, ok=True)
 
 #Техподдеержка
-@dp.callback_query_handler(text_contains='but')
+@dp.callback_query_handler(text_startswith='but')
 async def supp(call: types.CallbackQuery):
     if call.data == 'but_call':
         await bot.send_message(call.from_user.id, 'Номер для связи +38********', reply_markup=nav.sup_m)
