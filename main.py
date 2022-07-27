@@ -23,6 +23,32 @@ async def start(message: types.Message):
         await bot.send_message(message.from_user.id, 'Добрый день! Выберите, что хотите сделать',
                                reply_markup=nav.main_menu)
 
+#Рассылка
+@dp.message_handler(commands=['sendall'])
+async def sendall(message: types.Message):
+    if message.chat.type == 'private':
+        if message.from_user.id == 598265847:
+            text = message.text[9:]
+            users = db.get_users()
+            for row in users:
+                try:
+                    await bot.send_message(row[0], text)
+                    if int(row[1]) != 1:
+                        db.set_active(row[0], 1)
+                except:
+                    db.set_active(row[0],0)
+
+            await bot.send_message(message.from_user.id, 'Успешно отправлено')
+
+#Техподдержка
+@dp.callback_query_handler(text_startswith='but')
+async def supp(call: types.CallbackQuery):
+    if call.data == 'but_call':
+        await bot.send_message(call.from_user.id, 'Номер для связи +380930365611', reply_markup=nav.sup_m)
+    elif call.data == 'but_text':
+        await bot.send_message(call.from_user.id, 'Напишите ваш вопрос',)
+
+
 @dp.message_handler()
 async def bot_message(message: types.Message):
     if message.chat.type == 'private':
@@ -35,7 +61,7 @@ async def shop(call: types.CallbackQuery):
     elif call.data == 'btn_support':
         await bot.send_message(call.from_user.id, 'Выберите как хотите связаться', reply_markup=nav.sup_m)
 
-@dp.callback_query_handler(text_startswith='ord')
+@dp.callback_query_handler(text_startswith='qqq')
 async def buy(call: types.CallbackQuery):
     if call.data[:3] == 'day':
         await bot.send_invoice(call.from_user.id, title='Вода', description='Вкусная вода))', provider_token=pay_token,
@@ -54,31 +80,9 @@ async def checkout(pre_checkout_query: PreCheckoutQuery):
 async def got_payment(message: types.Message):
     await bot.send_message(message.chat.id, 'Успешная оплата')
 
-#Техподдеержка
-@dp.callback_query_handler(text_startswith='but')
-async def supp(call: types.CallbackQuery):
-    if call.data == 'but_call':
-        await bot.send_message(call.from_user.id, 'Номер для связи +38********', reply_markup=nav.sup_m)
-    elif call.data == 'but_text':
-        await bot.send_message(call.from_user.id, 'Вопрос: ', reply_markup=nav.sup_m)
-
-
-#Рассылка
-@dp.message_handler(commands=['sendall'])
-async def sendall(message: types.Message):
-    if message.chat.type == 'private':
-        if message.from_user.id == 598265847:
-            text = message.text[9:]
-            users = db.get_users()
-            for row in users:
-                try:
-                    await bot.send_message(row[0], text)
-                    if int(row[1]) != 1:
-                        db.set_active(row[0], 1)
-                except:
-                    db.set_active(row[0],0)
-
-            await bot.send_message(message.from_user.id, 'Успешно отправлено')
+@dp.callback_query_handler(text='back')
+async def back_button(call: types.CallbackQuery):
+    await bot.send_message(call.from_user.id, 'Назад', reply_markup=nav.main_menu)
 
 if __name__ == '__main__':
     executor.start_polling(dp, skip_updates=True)

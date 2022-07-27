@@ -19,6 +19,8 @@ qqq_th = InlineKeyboardButton(text='Четверг', callback_data='day_thursday
 qqq_f = InlineKeyboardButton(text='Пятница', callback_data='day_friday')
 qqq_s = InlineKeyboardButton(text='Суббота', callback_data='day_saturday')
 
+back_b = InlineKeyboardButton(text='Назад', callback_data='back')
+
 
 
 main_menu.insert(btn_order)
@@ -28,6 +30,7 @@ main_menu.insert(btn_share)
 
 sup_m.insert(but_text)
 sup_m.insert(but_call)
+sup_m.add(back_b)
 
 
 cday.insert(qqq_m)
@@ -36,3 +39,4 @@ cday.insert(qqq_w)
 cday.insert(qqq_th)
 cday.insert(qqq_f)
 cday.insert(qqq_s)
+cday.add(back_b)
