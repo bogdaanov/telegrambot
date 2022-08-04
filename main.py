@@ -3,6 +3,7 @@ from aiogram import Bot, Dispatcher, executor, types
 from payments import pay_token, prices
 from aiogram.types import PreCheckoutQuery
 from aiogram.types.message import ContentTypes
+from aiogram.contrib.fsm_storage.memory import MemoryStorage
 
 from db import Database
 import markup as nav
@@ -14,6 +15,8 @@ logging.basicConfig(level=logging.INFO)
 bot = Bot(token=TOKEN)
 dp = Dispatcher(bot)
 db = Database('database.db')
+admin_chat_id = 598265847
+storage = MemoryStorage()
 
 @dp.message_handler(commands=['start'])
 async def start(message: types.Message):
@@ -23,11 +26,16 @@ async def start(message: types.Message):
         await bot.send_message(message.from_user.id, 'Добрый день! Выберите, что хотите сделать',
                                reply_markup=nav.main_menu)
 
+# @dp.message_handler()
+# async def unknown (message: types.Message):
+#     if message.chat.type == 'private':
+#         await bot.send_message(message.from_user.id, 'Я вас не понимаю, нажмите /start, чтобы начать')
+
 #Рассылка
 @dp.message_handler(commands=['sendall'])
 async def sendall(message: types.Message):
     if message.chat.type == 'private':
-        if message.from_user.id == 598265847:
+        if message.from_user.id == admin_chat_id:
             text = message.text[9:]
             users = db.get_users()
             for row in users:
@@ -49,10 +57,18 @@ async def supp(call: types.CallbackQuery):
         await bot.send_message(call.from_user.id, 'Напишите ваш вопрос',)
 
 
+
 @dp.message_handler()
-async def bot_message(message: types.Message):
-    if message.chat.type == 'private':
-        await bot.send_message(message.from_user.id, 'Я Вас не понимаю. Нажмите /start, чтобы начать')
+async def message_to_admin(message: types.Message):
+    if message.reply_to_message == None:
+        await bot.forward_message(admin_chat_id, message.from_user.id, message.message_id)
+    else:
+        if message['from'].id == admin_chat_id:
+            if message.reply_to_message.forward_from.id:
+                await bot.send_message(message.reply_to_message.forward_from.id, message.text)
+        else:
+            pass
+
 
 @dp.callback_query_handler(text_startswith='btn')
 async def shop(call: types.CallbackQuery):
@@ -61,7 +77,7 @@ async def shop(call: types.CallbackQuery):
     elif call.data == 'btn_support':
         await bot.send_message(call.from_user.id, 'Выберите как хотите связаться', reply_markup=nav.sup_m)
 
-@dp.callback_query_handler(text_startswith='qqq')
+@dp.callback_query_handler(text_startswith='day')
 async def buy(call: types.CallbackQuery):
     if call.data[:3] == 'day':
         await bot.send_invoice(call.from_user.id, title='Вода', description='Вкусная вода))', provider_token=pay_token,
